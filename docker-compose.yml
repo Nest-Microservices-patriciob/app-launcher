@@ -25,6 +25,21 @@ services:
       - NATS_SERVERS=nats://nats-server:4222
       - DATABASE_URL=file:./dev.db
 
+  payments-ms:
+    build: ./payments-ms
+    volumes:
+      - ./payments-ms/src:/usr/src/app/src
+    ports:
+      - ${PAYMENTS_MS_PORT}:${PAYMENTS_MS_PORT}
+    command: npm run start:dev
+    environment:
+      - PORT=${PAYMENTS_MS_PORT}
+      - NATS_SERVERS=${PAYMENTS_MS_NATS_SERVERS}
+      - STRIPE_SECRET=${PAYMENTS_MS_STRIPE_SECRET}
+      - STRIPE_SUCCESS_URL=${PAYMENTS_MS_STRIPE_SUCCESS_URL}
+      - STRIPE_CANCEL_URL=${PAYMENTS_MS_STRIPE_CANCEL_URL}
+      - STRIPE_ENDPOINT_SECRET=${PAYMENTS_MS_STRIPE_ENDPOINT_SECRET}
+
   orders-ms:
     depends_on:
       - orders-db
